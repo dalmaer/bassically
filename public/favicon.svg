@@ -1,4 +1,38 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="neck" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a1f14"/>
+      <stop offset="100%" stop-color="#1a1208"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
   <rect width="32" height="32" rx="6" fill="#050505"/>
-  <text x="16" y="22" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="18" fill="#00F0FF">B</text>
+  <!-- Bass neck -->
+  <rect x="12" y="6" width="8" height="22" rx="2" fill="url(#neck)" opacity="0.8"/>
+  <!-- Fret wires -->
+  <line x1="12" y1="12" x2="20" y2="12" stroke="#4A4A52" stroke-width="0.5"/>
+  <line x1="12" y1="17" x2="20" y2="17" stroke="#4A4A52" stroke-width="0.5"/>
+  <line x1="12" y1="21" x2="20" y2="21" stroke="#4A4A52" stroke-width="0.5"/>
+  <line x1="12" y1="24.5" x2="20" y2="24.5" stroke="#4A4A52" stroke-width="0.5"/>
+  <!-- Strings -->
+  <line x1="14" y1="6" x2="14" y2="28" stroke="#9ca3af" stroke-width="1.2" opacity="0.6"/>
+  <line x1="16" y1="6" x2="16" y2="28" stroke="#9ca3af" stroke-width="0.9" opacity="0.5"/>
+  <line x1="18" y1="6" x2="18" y2="28" stroke="#9ca3af" stroke-width="0.7" opacity="0.4"/>
+  <!-- Nut -->
+  <rect x="11.5" y="9" width="9" height="1.5" rx="0.5" fill="#EAEAEA" opacity="0.7"/>
+  <!-- Glowing note bubble (cyan) -->
+  <circle cx="16" cy="14.5" r="2.5" fill="#050505" stroke="#00F0FF" stroke-width="1" filter="url(#glow)"/>
+  <!-- Note label -->
+  <text x="16" y="16" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="3.5" fill="#00F0FF">B</text>
+  <!-- Accent dot (magenta) -->
+  <circle cx="14" cy="19" r="1.2" fill="#FF00FF" opacity="0.7" filter="url(#glow)"/>
+  <!-- Accent dot (lime) -->
+  <circle cx="18" cy="23" r="1.2" fill="#CCFF00" opacity="0.6" filter="url(#glow)"/>
 </svg>

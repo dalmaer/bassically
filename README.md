@@ -2,7 +2,7 @@
 
 A visual bass guitar trainer built with React, Tailwind CSS, and Web Audio API. Learn the fretboard, explore notes, and practice chord progressions with an interactive neon-themed interface.
 
-**[Live Demo](https://bassically.vercel.app)**
+**[Live Demo](https://bassically.app)**
 
 ## Features
 

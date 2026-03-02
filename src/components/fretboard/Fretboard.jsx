@@ -29,7 +29,7 @@ export default function Fretboard({ highlightedNotes = [] }) {
   }, [highlightedNotes, activeNotes]);
 
   return (
-    <div className="relative w-full max-w-[1400px] flex flex-col z-10">
+    <div className="relative w-full max-w-[1400px] flex flex-col z-10 fretboard-touch">
       <div className="flex">
         {/* String Labels */}
         <StringLabels stringNames={tuningData.stringNames} isLeftHanded={isLeftHanded} />
@@ -79,7 +79,10 @@ export default function Fretboard({ highlightedNotes = [] }) {
               <FretMarkers fretWidths={fretWidths} markers={markers} />
 
               {/* Strings */}
-              <StringSet stringCount={tuningData.notes.length} />
+              <StringSet
+                stringCount={tuningData.notes.length}
+                vibratingStrings={new Set(activeNotes.map((n) => n.stringIndex))}
+              />
 
               {/* Interactive Note Grid */}
               <NoteGrid

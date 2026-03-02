@@ -1,12 +1,12 @@
 const STRING_HEIGHTS = [2.5, 4, 5.5, 7.5]; // G (thinnest) to E (thickest)
 
-export default function StringSet({ stringCount = 4 }) {
+export default function StringSet({ stringCount = 4, vibratingStrings = new Set() }) {
   return (
     <div className="absolute inset-0 flex flex-col justify-between py-10 pointer-events-none z-10">
       {STRING_HEIGHTS.slice(0, stringCount).map((height, i) => (
         <div
           key={i}
-          className="string-bass w-full rounded-full"
+          className={`string-bass w-full rounded-full ${vibratingStrings.has(i) ? 'animate-vibrate' : ''}`}
           style={{ height: `${height}px` }}
         />
       ))}

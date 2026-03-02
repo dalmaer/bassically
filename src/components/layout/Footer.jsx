@@ -28,7 +28,7 @@ export default function Footer() {
             key={mode.id}
             onClick={() => handleModeClick(mode.id)}
             className={cn(
-              'flex-1 py-2 px-4 rounded-lg font-ui text-sm font-semibold tracking-wide flex items-center justify-center gap-2 transition-all',
+              'flex-1 py-3 px-4 rounded-lg font-ui text-sm font-semibold tracking-wide flex items-center justify-center gap-2 transition-all min-h-[44px]',
               (activeMode === mode.id || (mode.id === 'calibrate' && false))
                 ? 'bg-surface text-neon-cyan shadow-sm font-display font-bold'
                 : 'text-text-muted hover:text-text-main'

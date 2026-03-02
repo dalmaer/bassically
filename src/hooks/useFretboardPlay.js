@@ -25,7 +25,7 @@ export function useFretboardPlay() {
       addActiveNote({ id, stringIndex, fret, note: noteName, color: 'neon-cyan' });
       playNote(midiNote);
 
-      setTimeout(() => removeActiveNote(id), 1500);
+      setTimeout(() => removeActiveNote(id), 500);
     },
     [tuningData, useFlats, addActiveNote, removeActiveNote, playNote, ensureReady]
   );

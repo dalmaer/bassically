@@ -96,9 +96,29 @@
   transform: scale(0.5);
   transition: all 0.15s ease;
 }
-.note-cell:hover .note-ghost {
-  opacity: 1;
-  transform: scale(1);
+@media (hover: hover) {
+  .note-cell:hover .note-ghost {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Touch feedback */
+.note-cell:active {
+  background: rgba(0, 240, 255, 0.08);
+}
+button:active {
+  transform: scale(0.95);
+}
+
+/* Prevent double-tap zoom and pull-to-refresh on fretboard */
+.fretboard-scroll {
+  touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
+}
+.fretboard-touch {
+  touch-action: manipulation;
+  overscroll-behavior: none;
 }
 
 /* Fretboard scroll */

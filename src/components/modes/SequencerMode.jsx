@@ -27,6 +27,8 @@ export default function SequencerMode() {
 
   const intervalRef = useRef(null);
   const stepCountRef = useRef(0);
+  const addActiveNote = useAppStore((s) => s.addActiveNote);
+  const removeActiveNote = useAppStore((s) => s.removeActiveNote);
   const { playNote, ensureReady } = useAudioEngine();
 
   // Pick an interesting MIDI note for the current step's chord
@@ -60,9 +62,28 @@ export default function SequencerMode() {
       const pickIndex = patterns[count % patterns.length];
       const midiNote = unique[Math.min(pickIndex, unique.length - 1)];
 
+      // Find the fretboard position for this MIDI note to highlight it
+      const playedPos = positions.find(
+        (pos) => tuningData.midiBase[pos.stringIndex] + pos.fret === midiNote
+      );
+
       playNote(midiNote, { duration: (60 / tempo) * 1.8 });
+
+      // Add a transient highlight at the played position
+      if (playedPos) {
+        const id = `seq-play-${Date.now()}`;
+        const semitone = resolveProgression(key, progression)[stepIndex];
+        addActiveNote({
+          id,
+          stringIndex: playedPos.stringIndex,
+          fret: playedPos.fret,
+          note: semitoneToNote(semitone, useFlats),
+          color: 'neon-cyan',
+        });
+        setTimeout(() => removeActiveNote(id), (60 / tempo) * 1800);
+      }
     },
-    [key, progression, tuningData, fretCount, playNote, tempo]
+    [key, progression, tuningData, fretCount, playNote, tempo, useFlats, addActiveNote, removeActiveNote]
   );
 
   // Auto-advance when playing

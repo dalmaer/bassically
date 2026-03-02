@@ -29,30 +29,25 @@ export default function Header() {
   return (
     <header className="h-[60px] border-b border-metal-dark bg-void/80 backdrop-blur-md flex items-center justify-between px-6 md:px-10 z-50 shrink-0">
       <div className="flex items-center gap-3 group cursor-pointer">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="size-8 shrink-0 group-hover:drop-shadow-[0_0_6px_rgba(0,240,255,0.5)] transition-all duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="size-9 shrink-0 group-hover:drop-shadow-[0_0_8px_rgba(0,240,255,0.6)] transition-all duration-300">
           <defs>
             <filter id="header-glow">
-              <feGaussianBlur stdDeviation="1.2" result="blur"/>
+              <feGaussianBlur stdDeviation="1.5" result="blur"/>
               <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
-            <linearGradient id="header-neck" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#2a1f14"/><stop offset="100%" stopColor="#1a1208"/>
-            </linearGradient>
           </defs>
-          <rect width="32" height="32" rx="6" fill="#050505"/>
-          <rect x="12" y="6" width="8" height="22" rx="2" fill="url(#header-neck)" opacity="0.8"/>
-          <line x1="12" y1="12" x2="20" y2="12" stroke="#4A4A52" strokeWidth="0.5"/>
-          <line x1="12" y1="17" x2="20" y2="17" stroke="#4A4A52" strokeWidth="0.5"/>
-          <line x1="12" y1="21" x2="20" y2="21" stroke="#4A4A52" strokeWidth="0.5"/>
-          <line x1="12" y1="24.5" x2="20" y2="24.5" stroke="#4A4A52" strokeWidth="0.5"/>
-          <line x1="14" y1="6" x2="14" y2="28" stroke="#9ca3af" strokeWidth="1.2" opacity="0.6"/>
-          <line x1="16" y1="6" x2="16" y2="28" stroke="#9ca3af" strokeWidth="0.9" opacity="0.5"/>
-          <line x1="18" y1="6" x2="18" y2="28" stroke="#9ca3af" strokeWidth="0.7" opacity="0.4"/>
-          <rect x="11.5" y="9" width="9" height="1.5" rx="0.5" fill="#EAEAEA" opacity="0.7"/>
-          <circle cx="16" cy="14.5" r="2.5" fill="#050505" stroke="#00F0FF" strokeWidth="1" filter="url(#header-glow)"/>
-          <text x="16" y="16" textAnchor="middle" fontFamily="sans-serif" fontWeight="bold" fontSize="3.5" fill="#00F0FF">B</text>
-          <circle cx="14" cy="19" r="1.2" fill="#FF00FF" opacity="0.7" filter="url(#header-glow)"/>
-          <circle cx="18" cy="23" r="1.2" fill="#CCFF00" opacity="0.6" filter="url(#header-glow)"/>
+          {/* Bass clef symbol */}
+          <path
+            d="M8 6 C8 6, 14 6, 17 9 C20 12, 20 16, 17 19 C14 22, 8 22, 8 19 C8 17, 10 15, 13 15 C16 15, 18 17, 16 20 L16 26"
+            fill="none"
+            stroke="#00F0FF"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            filter="url(#header-glow)"
+          />
+          {/* Two dots */}
+          <circle cx="21" cy="11" r="2" fill="#00F0FF" filter="url(#header-glow)"/>
+          <circle cx="21" cy="17" r="2" fill="#00F0FF" filter="url(#header-glow)"/>
         </svg>
         <h1 className="font-mono font-bold text-lg tracking-widest text-white uppercase pt-1">
           Bassically

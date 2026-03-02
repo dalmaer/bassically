@@ -5,10 +5,12 @@ import DiscoveryMode from './components/modes/DiscoveryMode';
 import SequencerMode from './components/modes/SequencerMode';
 import SettingsModal from './components/modes/SettingsModal';
 import { useAppStore } from './stores/useAppStore';
+import { useKeyboardPlay } from './hooks/useKeyboardPlay';
 
 export default function App() {
   const activeMode = useAppStore((s) => s.activeMode);
   const isSettingsOpen = useAppStore((s) => s.isSettingsOpen);
+  useKeyboardPlay();
 
   return (
     <div className="bg-void text-text-main h-screen w-full overflow-hidden flex flex-col font-ui antialiased selection:bg-neon-cyan selection:text-void">

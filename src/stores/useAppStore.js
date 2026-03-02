@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware';
 export const useAppStore = create(
   persist(
     (set) => ({
-      activeMode: 'freeplay',
+      activeMode: 'discovery',
       setActiveMode: (mode) => set({ activeMode: mode }),
 
       // Settings

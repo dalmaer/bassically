@@ -2,9 +2,9 @@ import { useAppStore } from '../../stores/useAppStore';
 import { cn } from '../../utils/cn';
 
 const MODES = [
-  { id: 'freeplay', label: 'STAGE', icon: 'piano_off' },
   { id: 'discovery', label: 'DISCOVERY', icon: 'travel_explore' },
   { id: 'sequencer', label: 'SEQUENCER', icon: 'queue_music' },
+  { id: 'freeplay', label: 'STAGE', icon: 'piano_off' },
 ];
 
 export default function Footer() {

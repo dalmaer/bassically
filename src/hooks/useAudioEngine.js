@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { useAudioStore } from '../stores/useAudioStore';
 
 export function useAudioEngine() {
-  const engine = useAudioStore((s) => s.engine);
   const isInitialized = useAudioStore((s) => s.isInitialized);
   const initEngine = useAudioStore((s) => s.initEngine);
 
@@ -10,13 +9,15 @@ export function useAudioEngine() {
     if (!isInitialized) await initEngine();
   }, [isInitialized, initEngine]);
 
+  // Always read engine from store at call time to avoid stale closure
   const playNote = useCallback(
     (midiNote, options) => {
+      const engine = useAudioStore.getState().engine;
       if (engine) return engine.playNote(midiNote, options);
       return null;
     },
-    [engine]
+    []
   );
 
-  return { engine, ensureReady, isReady: isInitialized, playNote };
+  return { ensureReady, isReady: isInitialized, playNote };
 }

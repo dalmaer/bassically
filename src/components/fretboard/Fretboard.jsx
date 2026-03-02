@@ -61,8 +61,8 @@ export default function Fretboard({ highlightedNotes = [] }) {
                   }}
                 >
                   {openHighlight && (
-                    <div className="w-7 h-7 rounded-full bg-surface border-2 border-neon-cyan shadow-glow-cyan flex items-center justify-center animate-pop-in z-30">
-                      <span className="font-display font-bold text-[10px] text-white">
+                    <div className={`w-7 h-7 rounded-full border-2 border-neon-cyan shadow-glow-cyan flex items-center justify-center animate-pop-in z-30 ${openHighlight.filled ? 'bg-neon-cyan' : 'bg-surface'}`}>
+                      <span className={`font-display font-bold text-[10px] ${openHighlight.filled ? 'text-void' : 'text-white'}`}>
                         {openHighlight.note}
                       </span>
                     </div>

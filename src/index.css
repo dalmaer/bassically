@@ -121,6 +121,18 @@ button:active {
   overscroll-behavior: none;
 }
 
+/* Note history ticker */
+.note-history-item {
+  animation: note-fade 4s ease-out forwards;
+}
+@keyframes note-fade {
+  0% { opacity: 0; transform: scale(0.5) translateX(10px); }
+  8% { opacity: 1; transform: scale(1.1) translateX(0); }
+  15% { transform: scale(1); }
+  70% { opacity: 1; }
+  100% { opacity: 0; transform: scale(0.8); }
+}
+
 /* Fretboard scroll */
 .fretboard-scroll::-webkit-scrollbar {
   height: 8px;

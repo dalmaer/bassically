@@ -22,6 +22,7 @@ export default function NoteCell({ stringIndex, fret, noteName, width, highlight
           color={highlight.color}
           opacity={highlight.opacity}
           pulse={highlight.pulse}
+          filled={highlight.filled}
         />
       ) : (
         <div className="note-ghost flex flex-col items-center -translate-y-3">

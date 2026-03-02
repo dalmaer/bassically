@@ -27,7 +27,7 @@ const COLOR_CLASSES = {
   },
 };
 
-export default function NoteBubble({ note, color = 'neon-cyan', opacity = 1, pulse = false }) {
+export default function NoteBubble({ note, color = 'neon-cyan', opacity = 1, pulse = false, filled = false }) {
   const colors = COLOR_CLASSES[color] || COLOR_CLASSES['neon-cyan'];
 
   return (
@@ -40,12 +40,13 @@ export default function NoteBubble({ note, color = 'neon-cyan', opacity = 1, pul
     >
       <div
         className={cn(
-          'w-8 h-8 rounded-full bg-surface border-2 flex items-center justify-center',
+          'w-8 h-8 rounded-full border-2 flex items-center justify-center',
+          filled ? colors.bg : 'bg-surface',
           colors.border,
           colors.shadow
         )}
       >
-        <span className={cn('font-display font-bold text-xs', 'text-white')}>
+        <span className={cn('font-display font-bold text-xs', filled ? 'text-void' : 'text-white')}>
           {note}
         </span>
       </div>

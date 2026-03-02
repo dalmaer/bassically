@@ -79,6 +79,7 @@ export default function SequencerMode() {
           fret: playedPos.fret,
           note: semitoneToNote(semitone, useFlats),
           color: 'neon-cyan',
+          filled: true,
         });
         setTimeout(() => removeActiveNote(id), (60 / tempo) * 1800);
       }

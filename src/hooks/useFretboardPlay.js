@@ -22,7 +22,7 @@ export function useFretboardPlay() {
       const midiNote = tuningData.midiBase[stringIndex] + fret;
       const id = `play-${stringIndex}-${fret}-${Date.now()}`;
 
-      addActiveNote({ id, stringIndex, fret, note: noteName, color: 'neon-cyan' });
+      addActiveNote({ id, stringIndex, fret, note: noteName, color: 'neon-cyan', filled: true });
       playNote(midiNote);
 
       setTimeout(() => removeActiveNote(id), 500);

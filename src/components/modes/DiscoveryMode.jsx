@@ -63,6 +63,7 @@ export default function DiscoveryMode() {
             fret: note.fret,
             note: noteName,
             color: 'neon-cyan',
+            filled: true,
           });
           setTimeout(() => removeActiveNote(id), 400);
         }, i * delayMs);

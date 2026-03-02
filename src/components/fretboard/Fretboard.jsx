@@ -17,11 +17,20 @@ export default function Fretboard({ highlightedNotes = [] }) {
   const activeNotes = useAppStore((s) => s.activeNotes);
 
   // Merge mode-specific highlights with transient play highlights
+  // Active notes (filled) override mode highlights at the same position
   const allHighlights = useMemo(() => {
-    const merged = [...highlightedNotes];
+    const activeSet = new Set(activeNotes.map((n) => `${n.stringIndex}-${n.fret}`));
+    const merged = highlightedNotes.map((h) => {
+      const key = `${h.stringIndex}-${h.fret}`;
+      if (activeSet.has(key)) {
+        const active = activeNotes.find((n) => `${n.stringIndex}-${n.fret}` === key);
+        return { ...h, ...active };
+      }
+      return h;
+    });
+    // Add any active notes not already in highlights
     activeNotes.forEach((note) => {
-      // Don't duplicate if same position already highlighted
-      if (!merged.some((h) => h.stringIndex === note.stringIndex && h.fret === note.fret)) {
+      if (!highlightedNotes.some((h) => h.stringIndex === note.stringIndex && h.fret === note.fret)) {
         merged.push(note);
       }
     });

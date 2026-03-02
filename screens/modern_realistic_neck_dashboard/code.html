@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Neon Theory - Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Rajdhani:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "void": "#050505",
+                        "surface": "#111113",
+                        "neon-cyan": "#00F0FF",
+                        "neon-magenta": "#FF00FF",
+                        "neon-lime": "#CCFF00",
+                        "metal-dark": "#333338",
+                        "metal-light": "#4A4A52",
+                        "text-main": "#EAEAEA",
+                        "text-muted": "#71717A",
+                    },
+                    fontFamily: {
+                        "display": ["Space Mono", "monospace"],
+                        "ui": ["Rajdhani", "sans-serif"],
+                        "code": ["JetBrains Mono", "monospace"],
+                        "grotesk": ["Space Grotesk", "sans-serif"],
+                    },
+                    boxShadow: {
+                        "glow-cyan": "0 0 10px #00F0FF",
+                        "glow-magenta": "0 0 10px #FF00FF",
+                        "glow-lime": "0 0 10px #CCFF00",
+                    },
+                    animation: {
+                        'vibrate': 'vibrate 0.1s linear infinite',
+                        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        vibrate: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '25%': { transform: 'translateY(-1px)' },
+                            '75%': { transform: 'translateY(1px)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: 1, boxShadow: '0 0 15px #00F0FF' },
+                            '50%': { opacity: .7, boxShadow: '0 0 5px #00F0FF' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333338;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4A4A52;
+        }
+
+        /* Fret spacing logic */
+        .fret-1 { width: 9.5%; }
+        .fret-2 { width: 9%; }
+        .fret-3 { width: 8.5%; }
+        .fret-4 { width: 8%; }
+        .fret-5 { width: 7.5%; }
+        .fret-6 { width: 7.1%; }
+        .fret-7 { width: 6.7%; }
+        .fret-8 { width: 6.3%; }
+        .fret-9 { width: 5.9%; }
+        .fret-10 { width: 5.6%; }
+        .fret-11 { width: 5.3%; }
+        .fret-12 { width: 5%; }
+
+        /* Interaction styling */
+        .string-interactive:hover .note-ghost {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .note-active {
+            animation: pulse-glow 1.5s infinite;
+        }
+
+        /* Realistic Dark Ebony Wood Texture */
+        .neck-wood {
+            background-color: #0d0d0f;
+            background-image: 
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
+                radial-gradient(circle at 50% 50%, rgba(20, 20, 25, 0.8), #0a0a0c),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.07'/%3E%3C/svg%3E");
+            background-size: 100% 100%, 100% 100%, 400px 400px;
+        }
+
+        /* Round-wound Metallic String Effect */
+        .string-bass {
+            background: linear-gradient(to bottom, #7a7a7a 0%, #d1d1d1 50%, #4a4a4a 100%);
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+        }
+        .string-bass::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(0,0,0,0.3) 1.5px, transparent 2px);
+            background-size: 3px 100%;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body class="bg-void text-text-main h-screen w-full overflow-hidden flex flex-col font-ui antialiased selection:bg-neon-cyan selection:text-void">
+<!-- Top Bar -->
+<header class="h-[60px] border-b border-metal-dark bg-void/80 backdrop-blur-md flex items-center justify-between px-6 md:px-10 z-50">
+<div class="flex items-center gap-3 group cursor-pointer">
+<div class="size-8 flex items-center justify-center text-neon-cyan bg-neon-cyan/10 rounded border border-neon-cyan/20 group-hover:shadow-glow-cyan transition-all duration-300">
+<span class="material-symbols-outlined text-[20px]">music_note</span>
+</div>
+<h1 class="font-display font-bold text-lg tracking-widest text-white uppercase pt-1">Neon Theory</h1>
+</div>
+<div class="flex items-center gap-6">
+<!-- Output Device Indicator -->
+<div class="hidden md:flex items-center gap-2 text-xs font-code text-text-muted">
+<span class="w-1.5 h-1.5 rounded-full bg-neon-cyan animate-pulse"></span>
+                OUTPUT: SCARLETT 2i2
+            </div>
+<!-- Volume/Audio Toggle -->
+<button class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-metal-dark text-text-main transition-colors border border-transparent hover:border-metal-light group">
+<span class="material-symbols-outlined group-hover:text-neon-cyan transition-colors">volume_up</span>
+</button>
+<!-- User Profile -->
+<div class="w-8 h-8 rounded-full bg-gradient-to-br from-metal-dark to-surface border border-metal-light overflow-hidden" data-alt="User avatar gradient"></div>
+</div>
+</header>
+<!-- Main Stage Area -->
+<main class="flex-1 relative flex flex-col items-center justify-center w-full p-4 md:p-10">
+<!-- Ambient Background Glow -->
+<div class="absolute inset-0 overflow-hidden pointer-events-none">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[60%] bg-neon-cyan/5 blur-[120px] rounded-full"></div>
+</div>
+<!-- Fretboard Container -->
+<div class="relative w-full max-w-[1200px] h-[320px] md:h-[400px] perspective-[1000px] z-10 flex flex-col">
+<!-- Headstock / Nut Area Labels -->
+<div class="absolute -left-12 top-0 bottom-8 w-10 flex flex-col justify-between py-[42px] text-right font-display text-text-muted text-sm font-bold opacity-60">
+<span>G</span>
+<span>D</span>
+<span>A</span>
+<span>E</span>
+</div>
+<!-- The Neck -->
+<div class="neck-wood relative w-full flex-1 rounded-xl border border-metal-dark shadow-2xl flex overflow-hidden">
+<!-- Nut (Left side) -->
+<div class="w-2 h-full bg-text-main/10 border-r-2 border-text-main/20 z-20 shadow-[4px_0_10px_rgba(0,0,0,0.5)]"></div>
+<!-- Frets & Strings Grid -->
+<div class="flex-1 relative flex">
+<!-- Fret Wires & Inlays Background Layer -->
+<div class="absolute inset-0 flex w-full h-full pointer-events-none">
+<!-- Generating 12 frets with decreasing widths -->
+<div class="fret-1 h-full border-r relative border-r-[2px] border-white/10"></div>
+<div class="fret-2 h-full border-r relative border-r-[2px] border-white/10"></div>
+<div class="fret-3 h-full border-r relative flex items-center justify-center border-r-[2px] border-white/10">
+<div class="w-3 h-3 bg-metal-dark rotate-45 rounded-[1px]"></div> <!-- Inlay -->
+</div>
+<div class="fret-4 h-full border-r relative border-r-[2px] border-white/10"></div>
+<div class="fret-5 h-full border-r relative flex items-center justify-center border-r-[2px] border-white/10">
+<div class="w-3 h-3 bg-metal-dark rotate-45 rounded-[1px]"></div> <!-- Inlay -->
+</div>
+<div class="fret-6 h-full border-r relative border-r-[2px] border-white/10"></div>
+<div class="fret-7 h-full border-r relative flex items-center justify-center border-r-[2px] border-white/10">
+<div class="w-3 h-3 bg-metal-dark rotate-45 rounded-[1px]"></div> <!-- Inlay -->
+</div>
+<div class="fret-8 h-full border-r relative border-r-[2px] border-white/10"></div>
+<div class="fret-9 h-full border-r relative flex items-center justify-center border-r-[2px] border-white/10">
+<div class="w-3 h-3 bg-metal-dark rotate-45 rounded-[1px]"></div> <!-- Inlay -->
+</div>
+<div class="fret-10 h-full border-r relative border-r-[2px] border-white/10"></div>
+<div class="fret-11 h-full border-r relative border-r-[2px] border-white/10"></div>
+<div class="fret-12 h-full border-r relative flex items-center justify-center gap-4 border-r-[2px] border-white/10">
+<div class="w-3 h-3 bg-metal-dark rotate-45 rounded-[1px]"></div> <!-- Double Inlay -->
+<div class="w-3 h-3 bg-metal-dark rotate-45 rounded-[1px]"></div>
+</div>
+</div>
+<!-- Strings Layer -->
+<div class="absolute inset-0 flex flex-col justify-between py-10 pointer-events-none z-10">
+<!-- G String (Thin) -->
+<div class="string-bass w-full h-[2.5px] group-hover:brightness-125 transition-all"></div>
+<!-- D String -->
+<div class="string-bass w-full h-[4px]"></div>
+<!-- A String -->
+<div class="string-bass w-full h-[5.5px]"></div>
+<!-- E String (Thick) -->
+<div class="string-bass w-full h-[7.5px]"></div>
+</div>
+<!-- Interactive Note Grid (Overlay) -->
+<!-- This grid sits on top to capture hovers/clicks -->
+<div class="absolute inset-0 flex flex-col w-full h-full z-20">
+<!-- Row 1: G String -->
+<div class="flex-1 flex w-full border-b border-transparent">
+<!-- Example Interactive Frets for String 1 -->
+<div class="fret-1 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10">
+<div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div>
+</div>
+<div class="fret-2 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10">
+<div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div>
+</div>
+<!-- Active Note Example (C on G string @ 5th fret) -->
+<div class="fret-3 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10">
+<div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div>
+</div>
+<div class="fret-4 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10">
+<div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div>
+</div>
+<!-- ACTIVE NOTE: C (Magenta for IV in G Major context example) -->
+<div class="fret-5 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10">
+<div class="w-8 h-8 rounded-full bg-surface border-2 border-neon-magenta shadow-glow-magenta flex items-center justify-center z-30">
+<span class="font-display font-bold text-xs text-white">C</span>
+</div>
+</div>
+<!-- Fill remaining frets empty... -->
+<div class="fret-6 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"> <div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div> </div>
+<div class="fret-7 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"> <div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div> </div>
+<div class="fret-8 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"> <div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div> </div>
+<div class="fret-9 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"> <div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div> </div>
+<div class="fret-10 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"> <div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div> </div>
+<div class="fret-11 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"> <div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div> </div>
+<div class="fret-12 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"> <div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div> </div>
+</div>
+<!-- Row 2: D String -->
+<div class="flex-1 flex w-full border-b border-transparent">
+<!-- Fill frets empty... -->
+<div class="fret-1 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-2 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-3 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-4 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<!-- ACTIVE NOTE: G (Cyan for Root) -->
+<div class="fret-5 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10">
+<div class="w-8 h-8 rounded-full bg-surface border-2 border-neon-cyan shadow-glow-cyan flex items-center justify-center z-30">
+<span class="font-display font-bold text-xs text-white">G</span>
+</div>
+</div>
+<div class="fret-6 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-7 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-8 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-9 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-10 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-11 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-12 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+</div>
+<!-- Row 3: A String -->
+<div class="flex-1 flex w-full border-b border-transparent">
+<!-- ACTIVE NOTE: D (Lime for V) -->
+<div class="fret-5 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10">
+<div class="w-8 h-8 rounded-full bg-surface border-2 border-neon-lime shadow-glow-lime flex items-center justify-center z-30">
+<span class="font-display font-bold text-xs text-white">D</span>
+</div>
+</div>
+<!-- Fill rest -->
+<div class="fret-1 string-interactive cursor-pointer group relative flex items-center justify-center order-first border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-2 string-interactive cursor-pointer group relative flex items-center justify-center order-first border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-3 string-interactive cursor-pointer group relative flex items-center justify-center order-first border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-4 string-interactive cursor-pointer group relative flex items-center justify-center order-first border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-6 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-7 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-8 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-9 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-10 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-11 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-12 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+</div>
+<!-- Row 4: E String -->
+<div class="flex-1 flex w-full">
+<!-- Example: G on E String (Cyan Root) -->
+<div class="fret-3 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10">
+<div class="w-8 h-8 rounded-full bg-surface border-2 border-neon-cyan shadow-glow-cyan flex items-center justify-center z-30">
+<span class="font-display font-bold text-xs text-white">G</span>
+</div>
+</div>
+<!-- Fill rest -->
+<div class="fret-1 string-interactive cursor-pointer group relative flex items-center justify-center order-first border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-2 string-interactive cursor-pointer group relative flex items-center justify-center order-first border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-4 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-5 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-6 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-7 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-8 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-9 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-10 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-11 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+<div class="fret-12 string-interactive cursor-pointer group relative flex items-center justify-center border-r-[2px] border-white/10"><div class="note-ghost w-6 h-6 rounded-full border border-white/40 bg-white/5 opacity-0 transition-all duration-150 scale-50"></div></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Fret Numbers -->
+<div class="flex w-full px-[2px] mt-4 font-code text-xs text-text-muted opacity-50 relative h-6">
+<!-- Spacing these manually to match the flex-basis of the frets above is hard with standard utility classes, 
+                     so we reuse the custom classes defined in style -->
+<div class="fret-1 text-center"></div>
+<div class="fret-2 text-center"></div>
+<div class="fret-3 text-center">3</div>
+<div class="fret-4 text-center"></div>
+<div class="fret-5 text-center">5</div>
+<div class="fret-6 text-center"></div>
+<div class="fret-7 text-center">7</div>
+<div class="fret-8 text-center"></div>
+<div class="fret-9 text-center">9</div>
+<div class="fret-10 text-center"></div>
+<div class="fret-11 text-center"></div>
+<div class="fret-12 text-center">12</div>
+</div>
+</div>
+</main>
+<!-- Bottom Control Deck -->
+<footer class="h-[100px] border-t border-metal-dark bg-surface flex items-center justify-center px-4 relative z-50">
+<!-- Mode Switcher -->
+<div class="bg-metal-dark p-1 rounded-xl flex items-center gap-1 shadow-inner max-w-lg w-full">
+<button class="flex-1 py-2 px-4 rounded-lg bg-surface text-neon-cyan shadow-sm font-display text-sm font-bold tracking-wide flex items-center justify-center gap-2 transition-all">
+<span class="material-symbols-outlined text-[18px]">piano_off</span>
+                FREE PLAY
+            </button>
+<button class="flex-1 py-2 px-4 rounded-lg text-text-muted hover:text-text-main font-ui text-sm font-semibold tracking-wide flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[18px]">travel_explore</span>
+                DISCOVERY
+            </button>
+<button class="flex-1 py-2 px-4 rounded-lg text-text-muted hover:text-text-main font-ui text-sm font-semibold tracking-wide flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[18px]">view_timeline</span>
+                SEQUENCER
+            </button>
+</div>
+<!-- Decorative Activity Strip -->
+<div class="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-metal-dark via-neon-cyan/50 to-metal-dark opacity-30"></div>
+</footer>
+</body></html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Neon Theory - NNS Sequencer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Rajdhani:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "void": "#050505",
+                        "panel": "#111113",
+                        "surface": "#1A1A1D",
+                        "primary": "#00F0FF", // Cyan
+                        "secondary": "#FF00FF", // Magenta
+                        "tertiary": "#CCFF00", // Lime
+                        "fret": "#333338",
+                        "string": "#4A4A52",
+                        "text-main": "#EAEAEA",
+                        "text-muted": "#71717A",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "monospace"],
+                        "ui": ["Rajdhani", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"],
+                    },
+                    boxShadow: {
+                        'neon-cyan': '0 0 10px #00F0FF, 0 0 20px rgba(0, 240, 255, 0.4)',
+                        'neon-magenta': '0 0 10px #FF00FF, 0 0 20px rgba(255, 0, 255, 0.4)',
+                        'neon-lime': '0 0 10px #CCFF00, 0 0 20px rgba(204, 255, 0, 0.4)',
+                        'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for fretboard container */
+        .fretboard-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+        .fretboard-scroll::-webkit-scrollbar-track {
+            background: #111113;
+        }
+        .fretboard-scroll::-webkit-scrollbar-thumb {
+            background: #333338;
+            border-radius: 4px;
+        }
+        .fretboard-scroll::-webkit-scrollbar-thumb:hover {
+            background: #4A4A52;
+        }
+        
+        .glow-pulse-magenta {
+            animation: pulse-magenta 2s infinite;
+        }
+        
+        @keyframes pulse-magenta {
+            0% { box-shadow: 0 0 10px #FF00FF, 0 0 20px rgba(255, 0, 255, 0.4); transform: scale(1); }
+            50% { box-shadow: 0 0 15px #FF00FF, 0 0 30px rgba(255, 0, 255, 0.6); transform: scale(1.05); }
+            100% { box-shadow: 0 0 10px #FF00FF, 0 0 20px rgba(255, 0, 255, 0.4); transform: scale(1); }
+        }
+
+        /* String vibration animation class */
+        .vibrate {
+            animation: vibrate 0.1s linear infinite;
+        }
+
+        @keyframes vibrate {
+            0% { transform: translateY(0); }
+            25% { transform: translateY(1px); }
+            75% { transform: translateY(-1px); }
+            100% { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-void text-text-main font-ui min-h-screen flex flex-col overflow-hidden selection:bg-primary selection:text-void">
+<!-- Top Navigation -->
+<header class="h-16 border-b border-fret flex items-center justify-between px-6 bg-void/90 backdrop-blur-sm z-50">
+<div class="flex items-center gap-3">
+<div class="size-8 text-primary">
+<svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M13.8261 30.5736C16.7203 29.8826 20.2244 29.4783 24 29.4783C27.7756 29.4783 31.2797 29.8826 34.1739 30.5736C36.9144 31.2278 39.9967 32.7669 41.3563 33.8352L24.8486 7.36089C24.4571 6.73303 23.5429 6.73303 23.1514 7.36089L6.64374 33.8352C8.00331 32.7669 11.0856 31.2278 13.8261 30.5736Z" fill="currentColor"></path>
+<path clip-rule="evenodd" d="M39.998 35.764C39.9944 35.7463 39.9875 35.7155 39.9748 35.6706C39.9436 35.5601 39.8949 35.4259 39.8346 35.2825C39.8168 35.2403 39.7989 35.1993 39.7813 35.1602C38.5103 34.2887 35.9788 33.0607 33.7095 32.5189C30.9875 31.8691 27.6413 31.4783 24 31.4783C20.3587 31.4783 17.0125 31.8691 14.2905 32.5189C12.0012 33.0654 9.44505 34.3104 8.18538 35.1832C8.17384 35.2075 8.16216 35.233 8.15052 35.2592C8.09919 35.3751 8.05721 35.4886 8.02977 35.589C8.00356 35.6848 8.00039 35.7333 8.00004 35.7388C8.00004 35.739 8 35.7393 8.00004 35.7388C8.00004 35.7641 8.0104 36.0767 8.68485 36.6314C9.34546 37.1746 10.4222 37.7531 11.9291 38.2772C14.9242 39.319 19.1919 40 24 40C28.8081 40 33.0758 39.319 36.0709 38.2772C37.5778 37.7531 38.6545 37.1746 39.3151 36.6314C39.9006 36.1499 39.9857 35.8511 39.998 35.764ZM35.9868 29.004L24 9.77997L12.0131 29.004C12.4661 28.8609 12.9179 28.7342 13.3617 28.6282C16.4281 27.8961 20.0901 27.4783 24 27.4783C27.9099 27.4783 31.5719 27.8961 34.6383 28.6282C35.082 28.7342 35.5339 28.8609 35.9868 29.004Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h1 class="font-display font-bold text-lg tracking-[-0.02em] leading-none mt-1">NEON THEORY</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center size-9 rounded-lg hover:bg-fret text-text-muted hover:text-text-main transition-colors">
+<span class="material-symbols-outlined text-[20px]">volume_up</span>
+</button>
+<button class="flex items-center justify-center size-9 rounded-lg hover:bg-fret text-text-muted hover:text-text-main transition-colors">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+<div class="h-8 w-px bg-fret mx-1"></div>
+<div class="size-8 rounded-full bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-void font-bold text-xs" data-alt="User avatar with gradient background">
+                NT
+            </div>
+</div>
+</header>
+<!-- Main Workspace -->
+<main class="flex-1 flex flex-col relative">
+<!-- NNS Sequencer Control Panel -->
+<div class="w-full bg-panel border-b border-fret py-5 px-6 lg:px-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+<!-- Left: Key Selection -->
+<div class="flex flex-col gap-2">
+<span class="text-xs font-display uppercase tracking-wider text-text-muted">Key Signature</span>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 bg-surface hover:bg-fret border border-fret rounded-lg px-4 py-2 transition-all group">
+<span class="font-display font-bold text-xl text-primary">G</span>
+<span class="font-display font-medium text-lg text-text-main">Major</span>
+<span class="material-symbols-outlined text-text-muted group-hover:text-primary transition-colors ml-2">expand_more</span>
+</button>
+<div class="h-8 w-px bg-fret mx-2"></div>
+<div class="flex flex-col">
+<span class="text-[10px] text-text-muted uppercase tracking-widest">Scale</span>
+<span class="font-mono text-sm text-text-main">G A B C D E F#</span>
+</div>
+</div>
+</div>
+<!-- Center: Progression Slots -->
+<div class="flex-1 w-full max-w-2xl flex flex-col gap-2 items-center">
+<div class="flex items-center justify-between w-full px-1">
+<span class="text-xs font-display uppercase tracking-wider text-text-muted">Current Pattern: I - IV - V</span>
+<div class="flex gap-2">
+<button class="text-xs text-text-muted hover:text-primary transition-colors uppercase font-bold tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">edit</span> Edit
+                         </button>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-3 w-full">
+<!-- Slot I -->
+<button class="relative group bg-surface border border-fret hover:border-primary/50 rounded-xl p-3 flex flex-col items-center gap-1 transition-all opacity-40 hover:opacity-100">
+<span class="text-xs font-mono font-bold text-primary tracking-widest">ROOT</span>
+<span class="text-3xl font-display font-bold text-primary">I</span>
+<span class="text-xs text-text-muted mt-1 group-hover:text-text-main">G Major</span>
+<div class="absolute inset-0 bg-primary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</button>
+<!-- Slot IV (Active State) -->
+<button class="relative group bg-surface border border-secondary rounded-xl p-3 flex flex-col items-center gap-1 transition-all shadow-neon-magenta transform scale-[1.02]">
+<span class="text-xs font-mono font-bold text-secondary tracking-widest">FOURTH</span>
+<span class="text-3xl font-display font-bold text-secondary">IV</span>
+<span class="text-xs text-text-main mt-1 font-bold">C Major</span>
+<div class="absolute top-0 right-0 p-1.5">
+<span class="flex size-2 rounded-full bg-secondary animate-pulse"></span>
+</div>
+</button>
+<!-- Slot V -->
+<button class="relative group bg-surface border border-fret hover:border-tertiary/50 rounded-xl p-3 flex flex-col items-center gap-1 transition-all opacity-40 hover:opacity-100">
+<span class="text-xs font-mono font-bold text-tertiary tracking-widest">FIFTH</span>
+<span class="text-3xl font-display font-bold text-tertiary">V</span>
+<span class="text-xs text-text-muted mt-1 group-hover:text-text-main">D Major</span>
+<div class="absolute inset-0 bg-tertiary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</button>
+</div>
+</div>
+<!-- Right: Playback Controls -->
+<div class="flex flex-col gap-2 items-end">
+<span class="text-xs font-display uppercase tracking-wider text-text-muted">Sequencer</span>
+<div class="flex items-center gap-2 bg-surface rounded-lg p-1 border border-fret">
+<button class="size-10 flex items-center justify-center rounded bg-void text-text-muted hover:text-primary transition-colors">
+<span class="material-symbols-outlined">skip_previous</span>
+</button>
+<button class="size-10 flex items-center justify-center rounded bg-primary text-void font-bold shadow-neon-cyan hover:shadow-lg hover:bg-white transition-all">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+<button class="size-10 flex items-center justify-center rounded bg-void text-text-muted hover:text-primary transition-colors">
+<span class="material-symbols-outlined">skip_next</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Fretboard Stage -->
+<div class="flex-1 w-full bg-void relative flex flex-col items-center justify-center overflow-hidden py-8">
+<!-- Background Grid Effect -->
+<div class="absolute inset-0 opacity-10 pointer-events-none" data-alt="Abstract grid background pattern" style="background-image: linear-gradient(#333338 1px, transparent 1px), linear-gradient(90deg, #333338 1px, transparent 1px); background-size: 40px 40px;"></div>
+<!-- Fretboard Container -->
+<div class="w-full max-w-[95%] xl:max-w-[1400px] relative overflow-x-auto fretboard-scroll pb-4 px-12">
+<div class="min-w-[1000px] relative bg-panel rounded-2xl border border-fret shadow-2xl py-12 px-16 select-none">
+<!-- Nut -->
+<div class="absolute left-4 top-0 bottom-0 w-2 bg-text-main rounded-l-sm shadow-lg z-10"></div>
+<!-- Fret Numbers -->
+<div class="absolute bottom-2 left-0 right-0 flex justify-between px-16 pointer-events-none">
+<!-- Spacing calculated roughly for visual layout -->
+<span class="font-mono text-xs text-text-muted w-8 text-center" style="margin-left: 12%">3</span>
+<span class="font-mono text-xs text-text-muted w-8 text-center" style="margin-left: 12%">5</span>
+<span class="font-mono text-xs text-text-muted w-8 text-center" style="margin-left: 12%">7</span>
+<span class="font-mono text-xs text-text-muted w-8 text-center" style="margin-left: 12%">9</span>
+<span class="font-mono text-xs text-text-main font-bold w-8 text-center" style="margin-left: 14%">12</span>
+</div>
+<!-- Frets (Vertical Lines) -->
+<div class="absolute inset-0 px-16 pointer-events-none flex justify-between">
+<!-- 12 Frets -->
+<div class="w-px bg-fret h-full"></div>
+<div class="w-px bg-fret h-full"></div>
+<div class="w-px bg-fret h-full"></div>
+<div class="w-px bg-fret h-full"></div>
+<div class="w-px bg-fret h-full"></div>
+<div class="w-px bg-fret h-full"></div>
+<div class="w-px bg-fret h-full"></div>
+<div class="w-px bg-fret h-full"></div>
+<div class="w-px bg-fret h-full"></div>
+<div class="w-px bg-fret h-full"></div>
+<div class="w-px bg-fret h-full"></div>
+<div class="w-px bg-fret h-full"></div>
+</div>
+<!-- Fret Markers (Inlays) -->
+<div class="absolute inset-0 pointer-events-none flex items-center px-16">
+<div class="w-full h-8 relative">
+<div class="absolute left-[21%] size-2 rotate-45 bg-fret"></div> <!-- 3 -->
+<div class="absolute left-[37%] size-2 rotate-45 bg-fret"></div> <!-- 5 -->
+<div class="absolute left-[52%] size-2 rotate-45 bg-fret"></div> <!-- 7 -->
+<div class="absolute left-[67%] size-2 rotate-45 bg-fret"></div> <!-- 9 -->
+<div class="absolute left-[88%] flex gap-4"> <!-- 12 -->
+<div class="size-2 rotate-45 bg-text-muted/50"></div>
+<div class="size-2 rotate-45 bg-text-muted/50"></div>
+</div>
+</div>
+</div>
+<!-- Strings -->
+<div class="relative flex flex-col gap-14 py-4 z-20">
+<!-- G String (High) -->
+<div class="relative w-full h-[2px] bg-string group cursor-pointer hover:bg-text-muted transition-colors">
+<!-- Notes on G String -->
+<!-- IV (C) - 5th Fret -->
+<div class="absolute left-[37%] -top-[15px] z-30 glow-pulse-magenta transition-all duration-300">
+<div class="size-8 rounded-full bg-secondary flex items-center justify-center border-2 border-secondary shadow-lg transform hover:scale-110 cursor-pointer">
+<span class="font-display font-bold text-void text-lg">C</span>
+</div>
+</div>
+<!-- V (D) - 7th Fret -->
+<div class="absolute left-[52%] -top-[15px] z-20 opacity-30">
+<div class="size-8 rounded-full bg-tertiary flex items-center justify-center border-2 border-tertiary shadow-none transform scale-90">
+<span class="font-display font-bold text-void text-lg">D</span>
+</div>
+</div>
+<!-- Root (G) - 12th Fret -->
+<div class="absolute left-[89%] -top-[15px] z-20 opacity-30">
+<div class="size-8 rounded-full bg-primary flex items-center justify-center border-2 border-primary shadow-none transform scale-90">
+<span class="font-display font-bold text-void text-lg">G</span>
+</div>
+</div>
+</div>
+<!-- D String -->
+<div class="relative w-full h-[3px] bg-string group cursor-pointer hover:bg-text-muted transition-colors">
+<!-- Root (G) - 5th Fret -->
+<div class="absolute left-[37%] -top-[15px] z-20 opacity-30">
+<div class="size-8 rounded-full bg-primary flex items-center justify-center border-2 border-primary shadow-none transform scale-90">
+<span class="font-display font-bold text-void text-lg">G</span>
+</div>
+</div>
+<!-- IV (C) - 10th Fret -->
+<div class="absolute left-[75%] -top-[15px] z-30 glow-pulse-magenta transition-all duration-300">
+<div class="size-8 rounded-full bg-secondary flex items-center justify-center border-2 border-secondary shadow-lg transform hover:scale-110 cursor-pointer">
+<span class="font-display font-bold text-void text-lg">C</span>
+</div>
+</div>
+</div>
+<!-- A String -->
+<div class="relative w-full h-[4px] bg-string group cursor-pointer hover:bg-text-muted transition-colors">
+<!-- IV (C) - 3rd Fret -->
+<div class="absolute left-[21%] -top-[14px] z-30 glow-pulse-magenta transition-all duration-300">
+<div class="size-8 rounded-full bg-secondary flex items-center justify-center border-2 border-secondary shadow-lg transform hover:scale-110 cursor-pointer">
+<span class="font-display font-bold text-void text-lg">C</span>
+</div>
+</div>
+<!-- V (D) - 5th Fret -->
+<div class="absolute left-[37%] -top-[14px] z-20 opacity-30">
+<div class="size-8 rounded-full bg-tertiary flex items-center justify-center border-2 border-tertiary shadow-none transform scale-90">
+<span class="font-display font-bold text-void text-lg">D</span>
+</div>
+</div>
+<!-- Root (G) - 10th Fret -->
+<div class="absolute left-[75%] -top-[14px] z-20 opacity-30">
+<div class="size-8 rounded-full bg-primary flex items-center justify-center border-2 border-primary shadow-none transform scale-90">
+<span class="font-display font-bold text-void text-lg">G</span>
+</div>
+</div>
+</div>
+<!-- E String (Low) -->
+<div class="relative w-full h-[5px] bg-string group cursor-pointer hover:bg-text-muted transition-colors">
+<!-- Root (G) - 3rd Fret -->
+<div class="absolute left-[21%] -top-[14px] z-20 opacity-30">
+<div class="size-8 rounded-full bg-primary flex items-center justify-center border-2 border-primary shadow-none transform scale-90">
+<span class="font-display font-bold text-void text-lg">G</span>
+</div>
+</div>
+<!-- IV (C) - 8th Fret -->
+<div class="absolute left-[60%] -top-[14px] z-30 glow-pulse-magenta transition-all duration-300">
+<div class="size-8 rounded-full bg-secondary flex items-center justify-center border-2 border-secondary shadow-lg transform hover:scale-110 cursor-pointer">
+<span class="font-display font-bold text-void text-lg">C</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 text-text-muted text-sm font-mono flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="size-3 rounded-full bg-primary opacity-30"></span>
+<span>Root (I)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="size-3 rounded-full bg-secondary shadow-neon-magenta"></span>
+<span class="text-text-main font-bold">Fourth (IV)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="size-3 rounded-full bg-tertiary opacity-30"></span>
+<span>Fifth (V)</span>
+</div>
+</div>
+</div>
+<!-- Bottom Mode Switcher -->
+<div class="h-20 bg-panel border-t border-fret flex items-center justify-center px-4 relative z-20">
+<div class="bg-surface p-1 rounded-xl flex gap-1 border border-fret">
+<button class="px-6 py-2.5 rounded-lg text-text-muted hover:text-text-main text-sm font-display font-bold uppercase tracking-wide transition-all hover:bg-white/5">
+                    Stage
+                </button>
+<button class="px-6 py-2.5 rounded-lg text-text-muted hover:text-text-main text-sm font-display font-bold uppercase tracking-wide transition-all hover:bg-white/5">
+                    Discovery
+                </button>
+<button class="px-6 py-2.5 rounded-lg bg-fret text-text-main shadow-lg text-sm font-display font-bold uppercase tracking-wide transition-all border border-white/5 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">queue_music</span>
+                    Sequencer
+                </button>
+<button class="px-6 py-2.5 rounded-lg text-text-muted hover:text-text-main text-sm font-display font-bold uppercase tracking-wide transition-all hover:bg-white/5">
+                    Calibrate
+                </button>
+</div>
+</div>
+</main>
+</body></html>

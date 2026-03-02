@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Neon Theory - Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Rajdhani:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "void": "#050505",
+                        "surface": "#111113",
+                        "primary": "#00F0FF", /* Cyan */
+                        "primary-dim": "#00F0FF33", 
+                        "secondary": "#FF00FF", /* Magenta */
+                        "tertiary": "#CCFF00", /* Lime */
+                        "text-main": "#EAEAEA",
+                        "text-muted": "#71717A",
+                        "border-dim": "#333338",
+                        "string-inactive": "#4A4A52",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "monospace"],
+                        "ui": ["Rajdhani", "sans-serif"],
+                    },
+                    boxShadow: {
+                        "neon": "0 0 10px rgba(0, 240, 255, 0.5)",
+                        "neon-sm": "0 0 5px rgba(0, 240, 255, 0.3)",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom range slider styling for webkit */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #00F0FF;
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: 0 0 10px #00F0FF;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #333338;
+            border-radius: 2px;
+        }
+        /* Custom scrollbar for dropdowns */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #111113; 
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #333338; 
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #4A4A52; 
+        }
+        
+        /* Backdrop pattern for visual interest */
+        .grid-bg {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, #111113 1px, transparent 1px),
+                              linear-gradient(to bottom, #111113 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="bg-void text-text-main font-display antialiased h-screen overflow-hidden relative">
+<!-- Background Layer (Abstract representation of the main app behind the modal) -->
+<div class="absolute inset-0 z-0 grid-bg opacity-30 pointer-events-none"></div>
+<!-- Abstract glowing shapes to simulate "Neon Theory" environment behind modal -->
+<div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[100px]"></div>
+<div class="absolute bottom-1/4 right-1/4 w-64 h-64 bg-secondary/5 rounded-full blur-[80px]"></div>
+<!-- Fretboard visual hint in background -->
+<div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[300px] flex flex-col justify-evenly opacity-10 px-10 pointer-events-none">
+<div class="w-full h-[5px] bg-string-inactive rounded-full"></div>
+<div class="w-full h-[3px] bg-string-inactive rounded-full"></div>
+<div class="w-full h-[2px] bg-string-inactive rounded-full"></div>
+<div class="w-full h-[1px] bg-string-inactive rounded-full"></div>
+</div>
+<!-- Modal Overlay Container -->
+<div class="relative z-10 flex h-full w-full items-center justify-center bg-void/60 backdrop-blur-sm p-4">
+<!-- Settings Modal -->
+<div class="w-full max-w-[600px] flex flex-col rounded-xl border border-border-dim bg-surface shadow-2xl overflow-hidden relative">
+<!-- Modal Header -->
+<div class="flex items-center justify-between border-b border-border-dim bg-surface/50 p-6">
+<div class="flex flex-col gap-1">
+<h2 class="text-xl font-bold tracking-wider text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">tune</span>
+                        SYSTEM CONFIGURATION
+                    </h2>
+<p class="text-text-muted text-xs uppercase tracking-widest font-ui">Settings / Calibrate</p>
+</div>
+<button class="group flex h-8 w-8 items-center justify-center rounded-lg border border-transparent text-text-muted hover:border-border-dim hover:bg-white/5 hover:text-white transition-all">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Modal Body -->
+<div class="flex flex-col gap-8 p-8 overflow-y-auto max-h-[70vh] custom-scrollbar">
+<!-- Section: Instrument -->
+<div class="flex flex-col gap-5">
+<div class="flex items-center gap-2 pb-2 border-b border-border-dim/50">
+<span class="material-symbols-outlined text-text-muted text-sm">piano</span>
+<h3 class="text-sm font-bold uppercase tracking-widest text-text-muted">Instrument Setup</h3>
+</div>
+<!-- Tuning Standard -->
+<div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-center">
+<div>
+<label class="block text-base font-medium text-white mb-1">Tuning Standard</label>
+<p class="text-xs text-text-muted font-ui">Select the base tuning for your strings.</p>
+</div>
+<div class="relative w-full md:w-48">
+<select class="w-full appearance-none rounded-lg border border-border-dim bg-void py-2.5 pl-4 pr-10 text-sm text-text-main focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary shadow-inner">
+<option>E A D G (Standard)</option>
+<option>B E A D (Low B)</option>
+<option>D A D G (Drop D)</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-text-muted">
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Fret Count Slider -->
+<div class="flex flex-col gap-3">
+<div class="flex justify-between items-end">
+<div>
+<label class="block text-base font-medium text-white">Fret Count</label>
+<p class="text-xs text-text-muted font-ui">Visible range of the fretboard.</p>
+</div>
+<span class="font-mono text-primary text-lg font-bold bg-primary/10 px-2 py-0.5 rounded border border-primary/20">20</span>
+</div>
+<div class="relative h-6 flex items-center">
+<input class="w-full h-1 bg-border-dim rounded-lg appearance-none cursor-pointer focus:outline-none" max="24" min="12" type="range" value="20"/>
+<!-- Ruler marks visual -->
+<div class="absolute top-4 left-0 w-full flex justify-between px-1 pointer-events-none">
+<div class="h-1 w-[1px] bg-text-muted"></div>
+<div class="h-1 w-[1px] bg-text-muted"></div>
+<div class="h-1 w-[1px] bg-text-muted"></div>
+<div class="h-1 w-[1px] bg-text-muted"></div>
+<div class="h-1 w-[1px] bg-text-muted"></div>
+</div>
+</div>
+<div class="flex justify-between text-[10px] text-text-muted uppercase font-mono mt-1">
+<span>12 Frets</span>
+<span>24 Frets</span>
+</div>
+</div>
+<!-- Left Handed Mode -->
+<div class="flex items-center justify-between p-4 rounded-lg border border-border-dim bg-void/50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-text-muted">pan_tool</span>
+<div>
+<p class="text-sm font-medium text-white">Left Handed Mode</p>
+<p class="text-xs text-text-muted font-ui">Flips the fretboard horizontally.</p>
+</div>
+</div>
+<!-- Toggle Switch -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-border-dim peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-text-main after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary peer-checked:after:bg-void shadow-inner"></div>
+</label>
+</div>
+</div>
+<!-- Section: Audio -->
+<div class="flex flex-col gap-5 pt-2">
+<div class="flex items-center gap-2 pb-2 border-b border-border-dim/50">
+<span class="material-symbols-outlined text-text-muted text-sm">speaker</span>
+<h3 class="text-sm font-bold uppercase tracking-widest text-text-muted">Audio Output</h3>
+</div>
+<!-- Output Device -->
+<div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-center">
+<div>
+<label class="block text-base font-medium text-white mb-1">Output Device</label>
+<p class="text-xs text-text-muted font-ui">Choose where the bass samples play.</p>
+</div>
+<div class="relative w-full md:w-64">
+<select class="w-full appearance-none rounded-lg border border-border-dim bg-void py-2.5 pl-4 pr-10 text-sm text-text-main focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary shadow-inner">
+<option>MacBook Pro Speakers</option>
+<option>External Headphones (USB)</option>
+<option>Scarlett 2i2 USB</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-text-muted">
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Volume Calibrate (Quick Test) -->
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-border-dim/30 hover:bg-border-dim/60 border border-border-dim hover:border-text-muted transition-all text-sm font-medium text-text-main">
+<span class="material-symbols-outlined text-base">play_arrow</span>
+                            Test Tone
+                        </button>
+<div class="h-1 flex-1 bg-border-dim rounded-full overflow-hidden">
+<!-- Simulated audio level visualizer -->
+<div class="h-full w-[0%] bg-primary shadow-neon transition-all duration-75" id="audio-viz" style="width: 0%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="flex items-center justify-end gap-3 border-t border-border-dim bg-surface/50 p-6 backdrop-blur-md">
+<button class="px-6 py-2.5 rounded-lg text-sm font-medium text-text-muted hover:text-white hover:bg-white/5 transition-colors uppercase tracking-wide">
+                    Cancel
+                </button>
+<button class="px-8 py-2.5 rounded-lg bg-primary text-void text-sm font-bold hover:bg-white hover:shadow-neon transition-all shadow-neon-sm uppercase tracking-wide">
+                    Save Changes
+                </button>
+</div>
+</div>
+</div>
+<script>
+        // Simple script to visualize audio level on hover of "Test Tone" just for UI demo feel
+        const testBtn = document.querySelector('button:has(.material-symbols-outlined:contains("play_arrow"))'); // Selecting vaguely for demo
+        // Actually lets select specifically by text content for robustness in this prompt context
+        const buttons = document.querySelectorAll('button');
+        let playButton;
+        buttons.forEach(btn => {
+            if(btn.innerText.includes('Test Tone')) playButton = btn;
+        });
+
+        if(playButton) {
+            playButton.addEventListener('click', () => {
+                const viz = document.getElementById('audio-viz');
+                viz.style.width = '80%';
+                setTimeout(() => { viz.style.width = '40%'; }, 100);
+                setTimeout(() => { viz.style.width = '60%'; }, 200);
+                setTimeout(() => { viz.style.width = '20%'; }, 300);
+                setTimeout(() => { viz.style.width = '0%'; }, 500);
+            });
+        }
+    </script>
+</body></html>

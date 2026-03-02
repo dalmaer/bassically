@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Neon Theory - Note Discovery Mode</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;family=Rajdhani:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "void": "#050505",
+              "panel": "#111113",
+              "neon-cyan": "#00F0FF",
+              "neon-magenta": "#FF00FF",
+              "neon-lime": "#CCFF00",
+              "metal": "#333338",
+              "string": "#4A4A52",
+              "text-main": "#EAEAEA",
+              "text-muted": "#71717A",
+            },
+            fontFamily: {
+              "display": ["Space Grotesk", "sans-serif"],
+              "mono": ["Space Mono", "monospace"],
+              "ui": ["Rajdhani", "sans-serif"],
+              "code": ["JetBrains Mono", "monospace"],
+            },
+            boxShadow: {
+              'neon-cyan': '0 0 10px #00F0FF',
+              'neon-magenta': '0 0 10px #FF00FF',
+              'neon-lime': '0 0 10px #CCFF00',
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #050505;
+            color: #EAEAEA;
+            font-family: "Rajdhani", sans-serif;
+            overflow: hidden; /* Prevent body scroll, handle inside containers */
+        }
+        
+        .fret-wire {
+            background: linear-gradient(180deg, #55555a 0%, #333338 100%);
+            box-shadow: -1px 0 2px rgba(0,0,0,0.5);
+        }
+
+        .string-glow:hover {
+            filter: drop-shadow(0 0 4px rgba(234, 234, 234, 0.3));
+        }
+
+        /* Custom Scrollbar for the fretboard container */
+        .fretboard-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+        .fretboard-scroll::-webkit-scrollbar-track {
+            background: #111113; 
+        }
+        .fretboard-scroll::-webkit-scrollbar-thumb {
+            background: #333338; 
+            border-radius: 4px;
+        }
+        .fretboard-scroll::-webkit-scrollbar-thumb:hover {
+            background: #4A4A52; 
+        }
+
+        /* Note Pop Animation */
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .note-marker {
+            animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen w-full bg-void selection:bg-neon-cyan selection:text-void">
+<!-- Header -->
+<header class="h-[60px] flex items-center justify-between px-8 border-b border-metal bg-void z-20 shrink-0">
+<div class="flex items-center gap-3 select-none">
+<div class="text-neon-cyan animate-pulse">
+<span class="material-symbols-outlined text-3xl">bolt</span>
+</div>
+<h1 class="font-mono font-bold text-2xl tracking-wider text-white">NEON THEORY</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 px-3 py-1 rounded bg-panel border border-metal">
+<span class="material-symbols-outlined text-neon-cyan text-sm">mic</span>
+<span class="font-code text-xs text-text-muted">INPUT: SCARLETT 2i2</span>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-panel hover:text-neon-cyan transition-colors text-text-muted">
+<span class="material-symbols-outlined">volume_up</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-panel hover:text-neon-cyan transition-colors text-text-muted">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<!-- Main Workspace -->
+<main class="flex-1 flex flex-col relative overflow-hidden">
+<!-- Fretboard Stage -->
+<div class="flex-1 flex flex-col items-center justify-center relative bg-void w-full px-8 py-4">
+<!-- Mode Indicator (Floating) -->
+<div class="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-2 opacity-80 pointer-events-none">
+<span class="material-symbols-outlined text-neon-cyan text-lg">travel_explore</span>
+<span class="font-mono text-neon-cyan text-sm tracking-widest uppercase font-bold drop-shadow-[0_0_8px_rgba(0,240,255,0.5)]">Discovery Mode</span>
+</div>
+<!-- Fretboard Container -->
+<div class="relative w-full max-w-[1400px] bg-panel rounded-xl border border-metal shadow-2xl overflow-hidden group select-none">
+<!-- Nut (Left side) -->
+<div class="absolute left-0 top-0 bottom-0 w-4 bg-[#EAEAEA] z-10 shadow-lg"></div>
+<!-- Fretboard Scroll Area -->
+<div class="fretboard-scroll overflow-x-auto overflow-y-hidden w-full relative h-[320px]">
+<!-- The Board Surface -->
+<div class="relative min-w-[1200px] h-full pl-4 pr-12">
+<!-- Frets Grid -->
+<div class="absolute inset-0 flex justify-between px-16 pointer-events-none">
+<!-- Fret 1 --> <div class="w-[2px] h-full fret-wire relative"><span class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-code text-text-muted text-xs">1</span></div>
+<!-- Fret 2 --> <div class="w-[2px] h-full fret-wire relative"></div>
+<!-- Fret 3 --> <div class="w-[2px] h-full fret-wire relative">
+<span class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-code text-text-muted text-xs">3</span>
+<!-- Inlay --> <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rotate-45 bg-metal shadow-inner"></div>
+</div>
+<!-- Fret 4 --> <div class="w-[2px] h-full fret-wire relative"></div>
+<!-- Fret 5 --> <div class="w-[2px] h-full fret-wire relative">
+<span class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-code text-text-muted text-xs">5</span>
+<!-- Inlay --> <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rotate-45 bg-metal shadow-inner"></div>
+</div>
+<!-- Fret 6 --> <div class="w-[2px] h-full fret-wire relative"></div>
+<!-- Fret 7 --> <div class="w-[2px] h-full fret-wire relative">
+<span class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-code text-text-muted text-xs">7</span>
+<!-- Inlay --> <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rotate-45 bg-metal shadow-inner"></div>
+</div>
+<!-- Fret 8 --> <div class="w-[2px] h-full fret-wire relative"></div>
+<!-- Fret 9 --> <div class="w-[2px] h-full fret-wire relative">
+<span class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-code text-text-muted text-xs">9</span>
+<!-- Inlay --> <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rotate-45 bg-metal shadow-inner"></div>
+</div>
+<!-- Fret 10 --> <div class="w-[2px] h-full fret-wire relative"></div>
+<!-- Fret 11 --> <div class="w-[2px] h-full fret-wire relative"></div>
+<!-- Fret 12 --> <div class="w-[2px] h-full fret-wire relative">
+<span class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-code text-text-muted text-xs text-neon-cyan">12</span>
+<!-- 12th Inlay Double -->
+<div class="absolute top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rotate-45 bg-metal shadow-inner"></div>
+<div class="absolute top-[65%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rotate-45 bg-metal shadow-inner"></div>
+</div>
+</div>
+<!-- Strings Container -->
+<div class="absolute inset-0 flex flex-col justify-between py-10 pointer-events-none">
+<!-- G String (Thin) -->
+<div class="relative w-full h-[2px] bg-string shadow-sm group-hover:brightness-125 transition-all string-glow flex items-center">
+<span class="absolute -left-10 font-mono text-text-muted text-sm w-6 text-right">G</span>
+<!-- Note: G (Open String) -->
+<div class="absolute left-[-8px] w-8 h-8 rounded-full bg-panel border-2 border-neon-cyan shadow-neon-cyan flex items-center justify-center z-20 note-marker">
+<span class="font-display font-bold text-neon-cyan text-sm">G</span>
+</div>
+<!-- Note: G (5th fret - C string relative pos) - Example placement approx 41% -->
+<!-- Note: G (12th fret) -->
+<div class="absolute right-[calc(4%-16px)] w-8 h-8 rounded-full bg-panel border-2 border-neon-cyan shadow-neon-cyan flex items-center justify-center z-20 note-marker">
+<span class="font-display font-bold text-neon-cyan text-sm">G</span>
+</div>
+</div>
+<!-- D String -->
+<div class="relative w-full h-[3px] bg-string shadow-sm group-hover:brightness-125 transition-all string-glow flex items-center">
+<span class="absolute -left-10 font-mono text-text-muted text-sm w-6 text-right">D</span>
+<!-- Note: G on D string (5th fret) -->
+<div class="absolute left-[39%] w-8 h-8 rounded-full bg-panel border-2 border-neon-cyan shadow-neon-cyan flex items-center justify-center z-20 note-marker">
+<span class="font-display font-bold text-neon-cyan text-sm">G</span>
+</div>
+</div>
+<!-- A String -->
+<div class="relative w-full h-[4px] bg-string shadow-sm group-hover:brightness-125 transition-all string-glow flex items-center">
+<span class="absolute -left-10 font-mono text-text-muted text-sm w-6 text-right">A</span>
+<!-- Note: G on A string (10th fret) -->
+<div class="absolute left-[78%] w-8 h-8 rounded-full bg-panel border-2 border-neon-cyan shadow-neon-cyan flex items-center justify-center z-20 note-marker">
+<span class="font-display font-bold text-neon-cyan text-sm">G</span>
+</div>
+</div>
+<!-- E String (Thick) -->
+<div class="relative w-full h-[5px] bg-string shadow-sm group-hover:brightness-125 transition-all string-glow flex items-center">
+<span class="absolute -left-10 font-mono text-text-muted text-sm w-6 text-right">E</span>
+<!-- Note: G on E string (3rd fret) -->
+<div class="absolute left-[23%] w-8 h-8 rounded-full bg-panel border-2 border-neon-cyan shadow-neon-cyan flex items-center justify-center z-20 note-marker">
+<span class="font-display font-bold text-neon-cyan text-sm">G</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Control Deck -->
+<div class="h-auto min-h-[140px] bg-panel/80 backdrop-blur-md border-t border-metal flex flex-col items-center justify-center py-6 px-4 shrink-0 z-20">
+<div class="w-full max-w-4xl flex flex-col gap-4">
+<div class="flex justify-between items-end mb-2">
+<h2 class="font-mono text-sm tracking-widest text-text-muted uppercase">Select Root Note</h2>
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-neon-cyan shadow-neon-cyan"></div>
+<span class="text-xs text-text-muted font-ui">Octaves</span>
+</div>
+</div>
+</div>
+<!-- Note Picker Chromatic Strip -->
+<div class="flex w-full gap-2 overflow-x-auto pb-2 scrollbar-hide justify-center">
+<!-- White Keys / Black Keys Pattern Simulation -->
+<button class="flex-1 min-w-[50px] h-12 rounded bg-transparent border border-metal text-text-muted font-display font-bold hover:border-text-muted hover:text-white transition-all">C</button>
+<button class="flex-1 min-w-[50px] h-12 rounded bg-transparent border border-metal text-text-muted font-display font-bold hover:border-text-muted hover:text-white transition-all">C#</button>
+<button class="flex-1 min-w-[50px] h-12 rounded bg-transparent border border-metal text-text-muted font-display font-bold hover:border-text-muted hover:text-white transition-all">D</button>
+<button class="flex-1 min-w-[50px] h-12 rounded bg-transparent border border-metal text-text-muted font-display font-bold hover:border-text-muted hover:text-white transition-all">D#</button>
+<button class="flex-1 min-w-[50px] h-12 rounded bg-transparent border border-metal text-text-muted font-display font-bold hover:border-text-muted hover:text-white transition-all">E</button>
+<button class="flex-1 min-w-[50px] h-12 rounded bg-transparent border border-metal text-text-muted font-display font-bold hover:border-text-muted hover:text-white transition-all">F</button>
+<button class="flex-1 min-w-[50px] h-12 rounded bg-transparent border border-metal text-text-muted font-display font-bold hover:border-text-muted hover:text-white transition-all">F#</button>
+<!-- Selected Note: G -->
+<button class="flex-1 min-w-[50px] h-12 rounded bg-neon-cyan border border-neon-cyan text-void font-display font-bold shadow-neon-cyan scale-110 transform transition-all relative group">
+                        G
+                        <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 w-1 h-8 bg-gradient-to-t from-transparent to-neon-cyan opacity-20 pointer-events-none"></div>
+</button>
+<button class="flex-1 min-w-[50px] h-12 rounded bg-transparent border border-metal text-text-muted font-display font-bold hover:border-text-muted hover:text-white transition-all">G#</button>
+<button class="flex-1 min-w-[50px] h-12 rounded bg-transparent border border-metal text-text-muted font-display font-bold hover:border-text-muted hover:text-white transition-all">A</button>
+<button class="flex-1 min-w-[50px] h-12 rounded bg-transparent border border-metal text-text-muted font-display font-bold hover:border-text-muted hover:text-white transition-all">A#</button>
+<button class="flex-1 min-w-[50px] h-12 rounded bg-transparent border border-metal text-text-muted font-display font-bold hover:border-text-muted hover:text-white transition-all">B</button>
+</div>
+</div>
+<!-- Mode Switcher (Footer) -->
+<div class="mt-6 flex bg-void p-1 rounded-lg border border-metal">
+<button class="px-6 py-2 rounded-md text-xs font-mono font-bold text-text-muted hover:text-text-main transition-colors">FREE PLAY</button>
+<button class="px-6 py-2 rounded-md text-xs font-mono font-bold bg-metal text-white shadow-sm border border-white/10">DISCOVERY</button>
+<button class="px-6 py-2 rounded-md text-xs font-mono font-bold text-text-muted hover:text-text-main transition-colors">SEQUENCER</button>
+</div>
+</div>
+</main>
+</body></html>

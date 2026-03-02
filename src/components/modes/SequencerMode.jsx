@@ -91,7 +91,8 @@ export default function SequencerMode() {
   useEffect(() => {
     if (isPlaying) {
       // Play the current step immediately when starting
-      ensureReady().then(() => playStepNote(activeStep));
+      ensureReady();
+      playStepNote(activeStep);
 
       intervalRef.current = setInterval(() => {
         nextStep();

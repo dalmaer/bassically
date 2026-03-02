@@ -15,8 +15,8 @@ export function useFretboardPlay() {
   const tuningData = TUNINGS[tuning];
 
   const handleNotePress = useCallback(
-    async (stringIndex, fret) => {
-      await ensureReady();
+    (stringIndex, fret) => {
+      ensureReady();
       const semitone = noteAtPosition(tuningData.notes[stringIndex], fret);
       const noteName = semitoneToNote(semitone, useFlats);
       const midiNote = tuningData.midiBase[stringIndex] + fret;

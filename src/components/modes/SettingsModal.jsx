@@ -23,8 +23,8 @@ export default function SettingsModal() {
     store.setIsSettingsOpen(false);
   };
 
-  const handleTestTone = async () => {
-    await ensureReady();
+  const handleTestTone = () => {
+    ensureReady();
     playNote(33); // A1
   };
 

@@ -7,10 +7,10 @@ export const useAudioStore = create((set, get) => ({
   volume: 0.8,
   isMuted: false,
 
-  initEngine: async () => {
+  initEngine: () => {
     if (get().isInitialized) return;
     const engine = new AudioEngine();
-    await engine.init();
+    engine.init();
     set({ engine, isInitialized: true });
   },
 

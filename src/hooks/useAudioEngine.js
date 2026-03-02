@@ -5,8 +5,8 @@ export function useAudioEngine() {
   const isInitialized = useAudioStore((s) => s.isInitialized);
   const initEngine = useAudioStore((s) => s.initEngine);
 
-  const ensureReady = useCallback(async () => {
-    if (!isInitialized) await initEngine();
+  const ensureReady = useCallback(() => {
+    if (!isInitialized) initEngine();
   }, [isInitialized, initEngine]);
 
   // Always read engine from store at call time to avoid stale closure

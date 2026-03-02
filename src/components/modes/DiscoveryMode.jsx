@@ -32,12 +32,12 @@ export default function DiscoveryMode() {
 
   // Arpeggiate all found positions from lowest pitch to highest
   const arpeggiate = useCallback(
-    async (semitone) => {
+    (semitone) => {
       // Clear any running arpeggio
       arpeggioTimeouts.current.forEach(clearTimeout);
       arpeggioTimeouts.current = [];
 
-      await ensureReady();
+      ensureReady();
 
       const positions = findNotePositions(semitone, tuningData.notes, fretCount);
       if (positions.length === 0) return;

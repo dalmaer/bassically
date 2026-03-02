@@ -39,10 +39,11 @@ export default function NoteHistory() {
   }, [history]);
 
   return (
-    <div className="w-full max-w-[1400px] h-10 flex items-center overflow-hidden relative">
-      {/* Fade mask on the left */}
+    <div className="w-full max-w-[1400px] h-10 flex items-center justify-center overflow-hidden relative">
+      {/* Fade masks on both edges */}
       <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-void to-transparent z-10 pointer-events-none" />
-      <div className="flex items-center gap-2 ml-auto pr-2">
+      <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-void to-transparent z-10 pointer-events-none" />
+      <div className="flex items-center gap-2">
         {history.map((item) => (
           <div
             key={item.id}

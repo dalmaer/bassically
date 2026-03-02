@@ -29,7 +29,7 @@ export default function Header() {
   return (
     <header className="h-[60px] border-b border-metal-dark bg-void/80 backdrop-blur-md flex items-center justify-between px-6 md:px-10 z-50 shrink-0">
       <div className="flex items-center gap-3 group cursor-pointer">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="size-9 shrink-0 group-hover:drop-shadow-[0_0_8px_rgba(0,240,255,0.6)] transition-all duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="size-9 shrink-0 opacity-70 group-hover:opacity-100 group-hover:drop-shadow-[0_0_12px_rgba(0,240,255,0.8)] group-hover:brightness-125 transition-all duration-300">
           <defs>
             <filter id="header-glow">
               <feGaussianBlur stdDeviation="1.5" result="blur"/>

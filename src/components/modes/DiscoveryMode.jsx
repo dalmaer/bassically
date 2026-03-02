@@ -12,6 +12,8 @@ export default function DiscoveryMode() {
   const tuning = useAppStore((s) => s.tuning);
   const fretCount = useAppStore((s) => s.fretCount);
   const useFlats = useAppStore((s) => s.useFlats);
+  const addActiveNote = useAppStore((s) => s.addActiveNote);
+  const removeActiveNote = useAppStore((s) => s.removeActiveNote);
   const { playNote, ensureReady } = useAudioEngine();
   const arpeggioTimeouts = useRef([]);
 
@@ -49,14 +51,25 @@ export default function DiscoveryMode() {
       // Play every position even if same MIDI pitch — each is a
       // different spot on the neck and the user wants to hear them all
       const delayMs = 200;
+      const noteName = semitoneToNote(semitone, useFlats);
       notes.forEach((note, i) => {
         const timeout = setTimeout(() => {
           playNote(note.midi, { duration: 1.2, velocity: 0.5 });
+          // Flash the specific position being played
+          const id = `arp-${note.stringIndex}-${note.fret}-${Date.now()}`;
+          addActiveNote({
+            id,
+            stringIndex: note.stringIndex,
+            fret: note.fret,
+            note: noteName,
+            color: 'neon-cyan',
+          });
+          setTimeout(() => removeActiveNote(id), 400);
         }, i * delayMs);
         arpeggioTimeouts.current.push(timeout);
       });
     },
-    [tuningData, fretCount, playNote, ensureReady]
+    [tuningData, fretCount, useFlats, playNote, ensureReady, addActiveNote, removeActiveNote]
   );
 
   const handleSelect = useCallback(

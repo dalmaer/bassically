@@ -14,13 +14,17 @@ export class AudioEngine {
     this.masterGain.gain.setValueAtTime(0.8, this.audioContext.currentTime);
     this.masterGain.connect(this.audioContext.destination);
 
-    // Play a silent buffer to fully unlock audio on iOS Safari
-    // This must happen synchronously in the gesture handler
-    const silentBuffer = this.audioContext.createBuffer(1, 1, this.audioContext.sampleRate);
-    const source = this.audioContext.createBufferSource();
-    source.buffer = silentBuffer;
-    source.connect(this.audioContext.destination);
-    source.start(0);
+    // Unlock iOS audio by playing a real oscillator at zero gain.
+    // Buffer sources alone don't unlock on all iOS versions.
+    const unlockGain = this.audioContext.createGain();
+    unlockGain.gain.setValueAtTime(0, this.audioContext.currentTime);
+    unlockGain.connect(this.audioContext.destination);
+
+    const unlockOsc = this.audioContext.createOscillator();
+    unlockOsc.frequency.setValueAtTime(200, this.audioContext.currentTime);
+    unlockOsc.connect(unlockGain);
+    unlockOsc.start(this.audioContext.currentTime);
+    unlockOsc.stop(this.audioContext.currentTime + 0.01);
   }
 
   midiToFrequency(midi) {

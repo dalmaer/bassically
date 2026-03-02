@@ -7,9 +7,22 @@ export class AudioEngine {
 
   async init() {
     this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    // iOS Safari requires explicit resume on user gesture
+    if (this.audioContext.state === 'suspended') {
+      await this.audioContext.resume();
+    }
+
     this.masterGain = this.audioContext.createGain();
     this.masterGain.gain.setValueAtTime(0.8, this.audioContext.currentTime);
     this.masterGain.connect(this.audioContext.destination);
+
+    // Play a silent buffer to fully unlock audio on iOS
+    const silentBuffer = this.audioContext.createBuffer(1, 1, this.audioContext.sampleRate);
+    const source = this.audioContext.createBufferSource();
+    source.buffer = silentBuffer;
+    source.connect(this.audioContext.destination);
+    source.start(0);
   }
 
   midiToFrequency(midi) {
@@ -17,7 +30,13 @@ export class AudioEngine {
   }
 
   playNote(midiNote, { duration = 1.5, velocity = 0.7 } = {}) {
-    if (!this.audioContext || this.audioContext.state !== 'running') return null;
+    if (!this.audioContext) return null;
+
+    // Resume if suspended (iOS Safari suspends on tab switch)
+    if (this.audioContext.state === 'suspended') {
+      this.audioContext.resume();
+    }
+    if (this.audioContext.state !== 'running') return null;
 
     const frequency = this.midiToFrequency(midiNote);
     const now = this.audioContext.currentTime;

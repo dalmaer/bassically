@@ -29,14 +29,17 @@ export class AudioEngine {
     return 440 * Math.pow(2, (midi - 69) / 12);
   }
 
-  playNote(midiNote, { duration = 1.5, velocity = 0.7 } = {}) {
+  async playNote(midiNote, { duration = 1.5, velocity = 0.7 } = {}) {
     if (!this.audioContext) return null;
 
-    // Resume if suspended (iOS Safari suspends on tab switch)
-    if (this.audioContext.state === 'suspended') {
-      this.audioContext.resume();
+    // Resume if suspended (iOS Safari suspends on tab switch or starts suspended)
+    if (this.audioContext.state !== 'running') {
+      try {
+        await this.audioContext.resume();
+      } catch (e) {
+        // ignore resume errors
+      }
     }
-    if (this.audioContext.state !== 'running') return null;
 
     const frequency = this.midiToFrequency(midiNote);
     const now = this.audioContext.currentTime;
